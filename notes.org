@@ -5,6 +5,8 @@ Doing these excercises in FORTH (gforth in particular) for practice.
 
 Also looking at [[https://gitlab.cs.washington.edu/fidelp/advent-of-code-2022/-/tree/main][this repo]] for examples on how to be more idomatic.
 
+[[https://www.reddit.com/r/Forth/comments/zclwlx/advent_of_code_in_forth/][Reddit Thread]]
+
 My solutions are generally a few times more complicated than the examples, the
 v2 versions are all re-dos to try and improve.
 
