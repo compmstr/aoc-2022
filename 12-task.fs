@@ -116,18 +116,29 @@ move-stack value move-tos
     valid-move? if push-move else 2drop endif ;
 : moves ( source --) dup >r up add-move r@ down add-move
     r@ left add-move r> right add-move ;
+: inc-dist ( source target -- )
+    swap distance comp 1+ swap distance comp-set dup map-store ;
 : do-move ( source target -- )
     \ dup .map-cell
-    valid-move? if swap distance comp 1+ swap distance comp-set dup map-store moves
+    valid-move? if inc-dist moves
     else 2drop endif ;
 
-: go read start-cell @ @ moves begin move-stack? while
-            pop-move do-move repeat ;
+: initial-cell 'a' 0 height comp-set ;
+defer init
 
-: part1 go target-cell @ @ distance comp . ;
+: result target-cell @ @ distance comp 1- ." Shortest path: " . cr ;
+: go read init begin move-stack? while pop-move do-move repeat result ;
+
+: part1-init initial-cell start-cell @ @ do-move ;
+: part1 ['] part1-init is init go ;
 
 \ Have the start go from each 'a' point, and find the shortest
-: part2 ( TODO ) ;
+: low-cell? height comp [char] a = ;
+: mark-start initial-cell swap do-move ;
+: part2-init map-width map-height * 0 do
+        map-buffer i cells + @ dup low-cell?
+        if mark-start else drop endif loop ;
+: part2 ['] part2-init is init go ;
 
 ( ==================== Navigation first attempt ==================== )
 \ This ended up just running in circles, and seems too complicated
