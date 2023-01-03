@@ -89,15 +89,8 @@ variable target-cell 0 target-cell !
 : up 0 -1 direction ; : down 0 1 direction ;
 : left -1 0 direction ; : right 1 0 direction ;
 
-: climbable? ( source target -- f ) height comp swap comp 1+ <= ;
-: faster? ( source target -- f ) distance comp dup 0= if 2drop true
-    else swap comp 1+ > endif ;
-
 create move-stack 6000 cells allot move-stack 6000 cells erase
 move-stack value move-tos
-: .move-stack ." Move-stack:" cr move-stack begin dup @ 0<> while
-            2 spaces dup from-x comp@ . dup from-y comp@ . ." => "
-            dup x comp@ . dup y comp@ . cr cell + repeat drop ;
 : move-stack? move-tos move-stack - 0> ;
 : (push-move) ( x1 y1 x2 y2 -- )
     0 y comp-set x comp-set from-y comp-set from-x comp-set move-tos !
@@ -110,6 +103,9 @@ move-stack value move-tos
 : pop-move ( -- source target )
     (pop-move) 2swap coords>cell -rot coords>cell ;
 
+: climbable? ( source target -- f ) height comp swap comp 1+ <= ;
+: faster? ( source target -- f ) distance comp dup 0= if 2drop true
+    else swap comp 1+ > endif ;
 : valid-move? 2dup climbable? -rot 2dup faster? -rot 2swap and ;
 : add-move ( source target -- )
     dup 0= if 2drop exit endif
@@ -122,6 +118,12 @@ move-stack value move-tos
     \ dup .map-cell
     valid-move? if inc-dist moves
     else 2drop endif ;
+
+: .move-stack ." Move-stack:" cr move-stack begin dup @ 0<> while
+            2 spaces dup from-x comp@ . dup from-y comp@ . ." => "
+            dup x comp@ . dup y comp@ . cr cell + repeat drop ;
+
+( ==================== Running ==================== )
 
 : initial-cell 'a' 0 height comp-set ;
 defer init
